@@ -1,178 +1,145 @@
 # 五语言统一代码风格规范
 
-> 统一优先，差异最小；只保留语言自身无法避免的差异。
-> 覆盖：**C++ · Java · Python · Rust · C**
+> **原则**：统一优先，差异最小。仅保留语言生态强制差异。  
+> **适用版本**：C++17 / Java 8 / Python 3.8 / Rust 1.60 / C11（及更高）。
 
 ---
 
-## 一、统一规则
+## 一、全局统一规则（除 Java 外全部遵守）
 
-| 规则 | 统一设定 | 示例 |
-|------|---------|------|
+| 规则 | 设定 | 示例 |
+|------|------|------|
 | 缩进 | 4 空格，禁用 Tab | — |
-| 行宽 | 最多 100 字符 | — |
-| 类型名 | `PascalCase` | `SinglyList` |
-| 常量 | `UPPER_SNAKE_CASE` | `MAX_SIZE` |
-| 函数 / 方法 | `snake_case`（Java 例外） | `add_node_head` |
+| 行宽 | ≤100 字符 | — |
+| 类型（类/结构/枚举） | `PascalCase` | `SinglyList`, `Color` |
+| 常量（含枚举常量） | `UPPER_SNAKE_CASE` | `MAX_SIZE`, `COLOR_RED` |
+| 函数/方法 | `snake_case`（Java 例外） | `add_node_head` |
 | 变量 | `snake_case`（Java 例外） | `current_node` |
 | 大括号 | K&R（`{` 同行） | `if (ok) {` |
 | 字符串 | 双引号 | `"hello"` |
-| 导入 | 标准库 → 第三方 → 本地 | — |
+| 导入顺序 | 标准库 → 第三方 → 本地 | — |
 | 运算符 | 两侧各 1 空格 | `a + b` |
 | 逗号 | 后 1 空格 | `a, b` |
-| 空行 | 函数 / 方法间 1 空行 | — |
+| 空行 | 函数/方法间 1 空行 | — |
+| 换行符 | LF（`\n`），文件末尾保留空行 | — |
 
-> 例外：Python 无大括号（缩进定块）；Java 函数 / 变量为 `camelCase`（官方规范）。
+> Python 无大括号（缩进定块）。
+
+---
 
 ## 二、语言差异表
 
+> 函数/方法、变量：Java 为 `camelCase`，其余 `snake_case`（见全局规则）。
+
 | 项目 | C++ | Java | Python | Rust | C |
 |------|-----|------|--------|------|-----|
-| 函数 / 方法 | `snake_case` | `camelCase` | `snake_case` | `snake_case` | `snake_case` |
-| 变量 | `snake_case` | `camelCase` | `snake_case` | `snake_case` | `snake_case` |
-| 私有成员 | 尾下划线 `data_` | `m` 前缀 `mData` | 前导下划线 `_data` | 无（`pub` 控制） | 无（无封装） |
-| 命名空间 / 包 / 模块 | 命名空间 `snake_case` | 包名全小写 | 包目录 `snake_case` | 模块 `snake_case` | 无（头文件划分） |
-| 注释 | `//` + Doxygen | `//` + Javadoc | `#` + docstring | `//` + `///` | `//` / `/* */` |
+| 私有成员 | 尾下划线 `data_` | 前缀 `m` → `mData` | 前导下划线 `_data` | 无（`pub` 控制） | 无（无封装） |
+| 枚举常量 | `UPPER_SNAKE` | `UPPER_SNAKE` | — | 枚举变体 `PascalCase` | `UPPER_SNAKE` |
+| 命名空间/包/模块 | 命名空间 `snake_case` | 包名全小写 | 包目录 `snake_case` | 模块 `snake_case` | 无（头文件划分） |
+| 注释风格 | `//` + Doxygen | `//` + Javadoc | `#` + docstring | `//` + `///` | `//` 或 `/* */` |
 | 扩展名 | `.hpp` / `.cpp` | `.java` | `.py` | `.rs` | `.h` / `.c` |
+
+---
 
 ## 三、各语言补充规则
 
 ### C++
 
-**命名**
-- 私有成员：尾下划线，如 `head_`、`size_`
-- 宏：`SCREAMING_SNAKE`，如 `MY_PROJECT_VERSION`
-- 模板参数：`PascalCase`，如 `template <typename ValueType>`
-- 命名空间：`snake_case`，如 `namespace linked_list`
+- **宏**：`SCREAMING_SNAKE`（如 `MY_VERSION`）。
+- **模板参数**：`PascalCase`（简短单字母可例外，如 `T`）。
+- **指针/引用**：`Type* p`, `Type& ref`（靠类型）。
+- **访问修饰符**：`public:` / `private:` 不缩进，成员缩进 4 空格。
+- **头文件**：`#ifndef`。
 
-**格式**
-- 指针 / 引用：`Type* p`、`Type& ref`（靠类型）
-- 访问修饰符 `public:` / `private:` 不缩进，成员缩进 4 空格
-- 头文件用 `#pragma once`
-
-**注释**
-- 普通注释用 `//`；头文件公开接口用 Doxygen
+---
 
 ### Java
 
-**命名**
-- 方法：`camelCase`，如 `addNodeHead`
-- 私有成员：`m` 前缀，如 `mHead`、`mSize`
-- 包名：全小写，如 `com.example.list`
-- 测试方法可含下划线：`testAddNode_head`（可选）
+- **测试方法**：允许下划线（如 `testAddNode_head`），但团队内应统一。
+- **类名与文件名**：必须一致，一个文件一个公开类。
+- **导入**：字母序，无通配符（`*`）。
+- **泛型/数组**：`List<Node>`，`int[] arr`。
 
-**格式**
-- 类名与文件名一致，一个文件一个公开类
-- `package` 在最前，`import` 字母序、无通配符
-- 泛型 `List<Node>`；数组 `int[] arr`
-
-**注释**
-- 公开类 / 方法用 Javadoc，含 `@param`、`@return`
+---
 
 ### Python
 
-**命名**
-- 私有成员：前导下划线，如 `_head`、`_size`
-- 模块名：`snake_case`，如 `linked_list.py`
+- **类型注解**：必须，如 `def add(data: int) -> None:`。
+- **入口**：`if __name__ == "__main__":`。
+- **文档字符串**：Google 风格，`Args:` / `Returns:` 分节。
 
-**格式**
-- 缩进 4 空格（语法强制）
-- 类型注解：`def add_node(data: int) -> None:`
-- 入口惯用 `if __name__ == "__main__":`
-
-**注释**
-- docstring（`"""`）Google 风格，`Args:` / `Returns:` 分节
+---
 
 ### Rust
 
-**命名**
-- 类型 / trait / 枚举变体：`PascalCase`
-- 私有成员：无标记（`pub` 控制）
-- 模块 / crate：`snake_case`
-- 常量：`UPPER_SNAKE_CASE`
+- **注释**：文档注释 `///`（公开 API 必写），内部注释 `//!`。
+- **借用**：`&T`, `&mut T`。
 
-**格式**
-- rustfmt 默认 4 空格 / 100 行宽 / K&R，天然一致
-- 泛型 `Vec<T>`；借用 `&T`、`&mut T`
-
-**注释**
-- `//`；文档注释 `///`、`//!`；公开 API 必写文档注释
+---
 
 ### C
 
-**命名**
-- 结构体：`PascalCase` + `typedef`
-- 成员：`snake_case`
-- 宏：`SCREAMING_SNAKE`
-- 无命名空间 / 封装，头文件划分模块
+- **结构体**：`PascalCase` + `typedef`，如 `typedef struct { ... } List;`。
+- **宏**：`SCREAMING_SNAKE`。
 
-**格式**
-- `.h` / `.c`；`#pragma once`
-- `//`（C99+），兼容 C89 用 `/* */`
-
-**注释**
-- 公开接口用 `//` 或 `/* */`；可用 Doxygen（可选）
+---
 
 ## 四、文件命名规则
 
-| 语言 | 文件类型 | 规则 | 示例 |
-|------|---------|------|------|
-| C++ | 头文件 | `snake_case` + `.hpp` | `singly_link_list.hpp` |
-| C++ | 源文件 | `snake_case` + `.cpp` | `main.cpp` |
-| C++ | 测试文件 | `*_test.cpp` | `list_test.cpp` |
-| C | 头文件 | `snake_case` + `.h` | `singly_link_list.h` |
-| C | 源文件 | `snake_case` + `.c` | `main.c` |
-| C | 测试文件 | `*_test.c` | `list_test.c` |
-| Java | 源文件 | 必须与公开类名一致 | `SinglyList.java` |
-| Java | 测试文件 | `*Test.java` | `SinglyListTest.java` |
-| Python | 模块文件 | `snake_case` + `.py` | `linked_list.py` |
-| Python | 包目录 | `snake_case` + `__init__.py` | `data_structures/` |
-| Python | 测试文件 | `test_*.py` | `test_linked_list.py` |
-| Rust | 模块文件 | `snake_case` + `.rs` | `linked_list.rs` |
-| Rust | 集成测试 | `tests/` 内 `*_test.rs` | `tests/list_test.rs` |
+| 语言 | 类型 | 规则 | 示例 |
+|------|------|------|------|
+| C++ | 头文件 | `snake_case.hpp` | `singly_link_list.hpp` |
+| C++ | 源文件 | `snake_case.cpp` | `main.cpp` |
+| C++ | 测试 | `*_test.cpp` | `list_test.cpp` |
+| C | 头文件 | `snake_case.h` | `list.h` |
+| C | 源文件 | `snake_case.c` | `main.c` |
+| C | 测试 | `*_test.c` | `list_test.c` |
+| Java | 源文件 | 公开类名 + `.java` | `SinglyList.java` |
+| Java | 测试 | `*Test.java` | `SinglyListTest.java` |
+| Python | 模块 | `snake_case.py` | `linked_list.py` |
+| Python | 包目录 | `snake_case/__init__.py` | `data_structures/` |
+| Python | 测试 | `test_*.py` | `test_linked_list.py` |
+| Rust | 模块 | `snake_case.rs` | `linked_list.rs` |
+| Rust | 集成测试 | `tests/*_test.rs` | `tests/list_test.rs` |
 
-**要点**
-- 除 Java 外，文件名不必与类名一致
-- Java 文件名与公开类名一致是语法强制
-- Java 一文件一公开类；Python 一模块可多类
-- Rust 单测在模块内（`#[cfg(test)]`），集成测试在 `tests/`
+> Java 文件名与公开类名一致为语法强制；其余语言无此要求。  
+> Rust 单元测试写在模块内（`#[cfg(test)]`），集成测试放 `tests/`。
 
-## 五、项目文件结构
+---
 
-### C++ / C（CMake 布局）
+## 五、项目目录结构
+
+### C++ / C（CMake）
 
 ```
 project/
-├── CMakeLists.txt        # 构建配置
-├── include/              # 头文件（.hpp / .h）
-├── src/                  # 源文件（.cpp / .c）
-├── tests/                # 单元测试（*_test.cpp / *_test.c）
-├── .gitignore            # 忽略 build/
-├── build/                # 构建产物（不提交）
+├── CMakeLists.txt
+├── include/          # .hpp / .h
+├── src/              # .cpp / .c
+├── tests/            # *_test.cpp / *_test.c
+├── .gitignore        # 忽略 build/
 └── README.md
 ```
 
-### Java — 标准 Gradle 布局
+### Java（Gradle 标准）
 
 ```
 project/
-├── settings.gradle       # Gradle 设置
-├── build.gradle          # 构建与依赖配置
-├── .gitignore            # 忽略 build/
+├── settings.gradle
+├── build.gradle
+├── .gitignore        # 忽略 build/
 └── src/
-    ├── main/
-    │   ├── java/com/example/list/SinglyList.java
-    │   └── resources/              # 资源（可选）
+    ├── main/java/com/example/list/SinglyList.java
     └── test/java/com/example/list/SinglyListTest.java
 ```
 
-### Java — 简单课程布局
+### Java（简单课程布局）
 
 ```
 project/
-├── Main.java             # 程序入口
-├── src/SinglyList.java   # 其余源文件（可按包建子目录）
-├── .gitignore            # 忽略 *.class、out/
+├── Main.java
+├── src/SinglyList.java
+├── .gitignore        # 忽略 *.class, out/
 └── README.md
 ```
 
@@ -180,24 +147,37 @@ project/
 
 ```
 project/
-├── pyproject.toml        # 项目配置（或用 requirements.txt）
-├── .gitignore            # 忽略 venv/、__pycache__/
-├── main.py               # 程序入口
-├── src/__init__.py       # 业务代码包
-├── tests/                # 测试（test_*.py）
+├── pyproject.toml    # 或 requirements.txt
+├── .gitignore        # 忽略 venv/, __pycache__/
+├── main.py
+├── src/__init__.py
+├── tests/test_*.py
 └── README.md
 ```
 
-### Rust（Cargo 布局）
+### Rust（Cargo）
 
 ```
 project/
-├── Cargo.toml            # 项目配置与依赖
-├── .gitignore            # 忽略 target/
+├── Cargo.toml
+├── .gitignore        # 忽略 target/
 ├── src/
-│   ├── main.rs           # 程序入口
-│   ├── lib.rs            # 库入口（可选）
-│   └── list.rs           # 模块
-├── tests/list_test.rs    # 集成测试
+│   ├── main.rs
+│   ├── lib.rs
+│   └── list.rs
+├── tests/list_test.rs
 └── README.md
 ```
+
+---
+
+## 六、格式化工具推荐
+
+| 语言 | 工具 | 配置说明 |
+|------|------|----------|
+| C++ / C | `clang-format` | 基于本规范生成 `.clang-format` |
+| Java | `google-java-format` | 直接使用，无需额外配置 |
+| Python | `black` + `isort` | `black` 行宽设为 100，`isort` 配合 `black` |
+| Rust | `rustfmt` | 默认配置即符合本规范 |
+
+> 建议在 CI 中检查格式，或使用 pre-commit hook 自动格式化。
