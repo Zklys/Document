@@ -64,7 +64,7 @@ sudo apt-get install ninja-build
 
 ### 2.1 最简项目结构
 
-```
+```text
 Project/
 ├── CMakeLists.txt
 └── main.cpp
@@ -813,7 +813,7 @@ cmake -DCMAKE_TOOLCHAIN_FILE=toolchain.cmake ..
 
 ### 11.1 项目结构规范
 
-```
+```text
 Project/
 ├── CMakeLists.txt              # 顶层配置
 ├── cmake/                      # 自定义 CMake 模块

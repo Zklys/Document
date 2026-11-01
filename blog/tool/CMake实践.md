@@ -1,7 +1,10 @@
-# Cmake的使用方法
-- 另一篇[CMake](Cmake.md)。
+# CMake 的使用方法
+
+- 另一篇：[CMake 系统性指南](CMake.md)。
+
 ---
-- ## cmake的简单介绍
+
+## CMake 的简单介绍
 
 `cmake`是一个辅助项目程序构建系统，能够跨平台构建程序。
 能够生成`makefile`文件，能够让你省去编写复杂`makefile`文件的功夫`（大概也许会重新花在编写cmake的文件上？）`
@@ -13,7 +16,7 @@
 
 示例：如下
 
-```javascript
+```cmake
 cmake_minimum_required(VERSION 4.3.0)
 project(Hello)
 add_executable(hello hello.cpp)
@@ -22,7 +25,7 @@ add_executable(hello hello.cpp)
 `cmake_minimum_required()`是用来设置cmake的最低版本的，意思是你的cmake版本最低不能低于这个版本。
 如果我们把参数改为4.4的话，cmake会报出这样的错误：如下
 
-```javascript
+```text
 CMake Error at CMakeLists.txt:1 (cmake_minimum_required):
   CMake 4.4 or higher is required.  You are running version 4.3.2
 
@@ -80,7 +83,7 @@ CMake Error at CMakeLists.txt:1 (cmake_minimum_required):
 
 在最外层的`CMakeLists.txt`文件中：
 
-```javascript
+```cmake
 # TODO1: Set the minimum required version of CMake to be 3.23
 
 # TODO2: Create a project named Tutorial
@@ -124,7 +127,7 @@ CMake Error at CMakeLists.txt:1 (cmake_minimum_required):
 
 ok！暂时性的，我们编写了一份可用的CML，现在你可以执行它了。
 
-```javascript
+```cmake
 # TODO1: Set the minimum required version of CMake to be 3.23
 cmake_minimum_required(VERSION 3.23)
 # TODO2: Create a project named Tutorial
@@ -174,7 +177,7 @@ int main(int argc, char* argv[])
 同时我们也要把`MathFunctions`所需要的源文件和头文件与它关联起来。
 我们使用如下的方式：
 
-```javascript
+```cmake
 target_sources(
   MathFunctions 
 PRIVATE 
@@ -349,7 +352,7 @@ double sqrt(double x);
 
 `./CML`
 
-```javascript
+```cmake
 # TODO1: Set the minimum required version of CMake to be 3.23
 cmake_minimum_required(VERSION 3.23)
 # TODO2: Create a project named Tutorial
@@ -385,7 +388,7 @@ add_subdirectory(MathFunctions)
 
 `./Tutorial`
 
-```javascript
+```cmake
 # TODO10: Move all the Tutorial target commands to this CMakeLists.txt. Ensure
 #          that all paths are updated to be relative to this new location.
 add_executable(Tutorial)
@@ -398,7 +401,7 @@ target_link_libraries(Tutorial PRIVATE MathFunctions)
 
 `./MathFunctions`
 
-```javascript
+```cmake
 # TODO12: Move all the MathFunctions target commands to this CMakeLists.txt.
 #         Ensure that all paths are updated to be relative to this new location.
 add_library(MathFunctions)
