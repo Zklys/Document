@@ -1,17 +1,19 @@
-## 1.1 环境搭建
+# Python
 
-学习 Python 的第一步是搭建开发环境：
+## 第一部分：基础语法
 
-- **安装 Python**：从 Python 官网下载并安装适合你操作系统的 Python 版本（建议 Python 3.8 或更新版本）
-- **选择 IDE 或文本编辑器**：推荐 PyCharm、VSCode，或轻量级的 Sublime Text
-- **包管理工具**：熟悉 pip（Python 包管理器）的使用
-- **虚拟环境**：学会为不同项目创建独立的虚拟环境（venv），避免依赖冲突
+### 1.1 环境搭建
+
+- **安装 Python**：从官网下载对应系统的版本，建议 3.8 及以上
+- **编辑器**：PyCharm、VSCode 或轻量级 Sublime Text
+- **包管理**：pip
+- **虚拟环境**：每个项目单独建 venv，避免依赖冲突
 
 ### 1.2 基本语法
 
 #### 变量与数据类型
 
-Python 中的变量不需要声明类型，直接赋值即可。基本数据类型包括：
+变量不需要声明类型，赋值即可。基本类型：
 
 ```python
 # 整数
@@ -31,8 +33,6 @@ nothing = None
 ```
 
 #### 运算符
-
-Python 支持丰富的运算符：
 
 ```python
 # 算术运算符
@@ -94,8 +94,6 @@ while count < 5:
 
 ### 1.3 函数
 
-函数是组织代码的基本单元：
-
 ```python
 # 定义函数
 def greet(name, greeting="你好"):
@@ -122,11 +120,9 @@ print_info(name="Python", version=3.12)
 
 ### 1.4 数据结构
 
-Python 提供了丰富的数据结构：
-
 #### 列表（List）
 
-有序、可变的数据集合：
+有序、可变。
 
 ```python
 # 创建列表
@@ -157,7 +153,7 @@ squares = [x**2 for x in range(10)]
 
 #### 元组（Tuple）
 
-有序、不可变的数据集合：
+有序、不可变。
 
 ```python
 # 创建元组
@@ -174,7 +170,7 @@ print(x, y)  # 10 20
 
 #### 字典（Dictionary）
 
-键值对存储：
+键值对存储。
 
 ```python
 # 创建字典
@@ -202,7 +198,7 @@ squared = {x: x**2 for x in range(5)}
 
 #### 集合（Set）
 
-无序、不重复的元素集合：
+无序、元素不重复。
 
 ```python
 # 创建集合
@@ -224,8 +220,6 @@ print(set1 - set2)  # 差集 {1}
 ```
 
 ### 1.5 字符串处理
-
-Python 的字符串操作非常强大：
 
 ```python
 text = "  Hello, Python!  "
@@ -257,8 +251,6 @@ print(text.replace("Python", "World"))
 
 ### 1.6 文件操作
 
-文件读写是编程的基本技能：
-
 ```python
 # 写入文件
 with open("example.txt", "w", encoding="utf-8") as f:
@@ -281,8 +273,6 @@ with open("example.txt", "a", encoding="utf-8") as f:
 ```
 
 ### 1.7 异常处理
-
-异常处理是程序健壮性的保障：
 
 ```python
 # 基本异常处理
@@ -315,8 +305,6 @@ def validate_age(age):
 
 ### 1.8 模块与包
 
-模块和包是代码组织和复用的基础：
-
 ```python
 # 导入模块
 import math
@@ -340,7 +328,7 @@ if __name__ == "__main__":
 
 ### 1.9 编码规范
 
-遵循 PEP 8 规范可以提高代码的可读性和可维护性：
+遵循 PEP 8：
 
 - 使用 4 个空格缩进
 - 每行不超过 79 个字符
@@ -348,12 +336,11 @@ if __name__ == "__main__":
 - 使用有意义的变量名
 - 添加适当的注释和文档字符串
 
-
 ## 第二部分：面向对象编程（OOP）
 
 ### 2.1 类与对象
 
-类是对象的模板，对象是类的实例：
+类是对象的模板，对象是类的实例。
 
 ```python
 class Person:
@@ -395,7 +382,7 @@ print(Person.is_adult(20))  # True
 
 ### 2.2 继承
 
-继承允许子类复用父类的属性和方法：
+子类复用父类的属性和方法。
 
 ```python
 # 单继承
@@ -425,7 +412,7 @@ print(bird.introduce())
 
 ### 2.3 封装与属性
 
-通过私有属性和 property 实现封装：
+用私有属性和 property 实现封装。
 
 ```python
 class BankAccount:
@@ -498,12 +485,11 @@ print(v1 == v2)     # False
 print(len(v1))      # 5
 ```
 
-
 ## 第三部分：进阶特性
 
 ### 3.1 迭代器与生成器
 
-生成器可以按需生成值，而不是一次性生成整个序列：
+生成器按需生成值，不一次性生成整个序列。
 
 ```python
 # 迭代器
@@ -543,7 +529,7 @@ for square in squares:
 
 ### 3.2 装饰器
 
-装饰器可以在不修改函数本身的情况下增强函数的功能：
+装饰器在不修改函数本身的情况下增强其功能。
 
 ```python
 import time
@@ -592,7 +578,7 @@ def unstable_function():
 
 ### 3.3 上下文管理器
 
-上下文管理器用于管理资源（文件、数据库连接等）：
+管理资源（文件、数据库连接等）。
 
 ```python
 # 使用 with 语句（内置上下文管理器）
@@ -666,7 +652,7 @@ print(reduce(lambda x, y: x * y, numbers))    # 120
 
 ### 3.5 描述符
 
-描述符用于管理属性的访问行为：
+描述符管理属性的访问行为。
 
 ```python
 class PositiveNumber:
@@ -697,7 +683,7 @@ p = Product(100, 50)
 
 ### 3.6 元类
 
-元类是类的类，用于控制类的创建行为：
+元类是类的类，控制类的创建行为。
 
 ```python
 # 元类的基本使用
@@ -756,12 +742,11 @@ def fibonacci_memo(n):
 print(fibonacci_memo(40))  # 快速计算
 ```
 
-
 ## 第四部分：并发与异步编程
 
 ### 4.1 多线程（Threading）
 
-多线程适用于 I/O 密集型任务：
+适合 I/O 密集型任务。
 
 ```python
 import threading
@@ -804,7 +789,7 @@ print(shared_counter)  # 200000
 
 ### 4.2 多进程（Multiprocessing）
 
-多进程适用于 CPU 密集型任务，可以绕过 GIL：
+适合 CPU 密集型任务，可绕过 GIL。
 
 ```python
 from multiprocessing import Process, Pool, cpu_count
@@ -835,7 +820,7 @@ if __name__ == "__main__":
 
 ### 4.3 异步编程（AsyncIO）
 
-asyncio 适用于高并发的 I/O 操作：
+asyncio 适合高并发 I/O 操作。
 
 ```python
 import asyncio
@@ -881,7 +866,7 @@ async def fetch_multiple():
 
 ### 4.4 并发工具（concurrent.futures）
 
-提供高层次的线程池和进程池接口：
+线程池与进程池的高层接口。
 
 ```python
 from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
@@ -902,12 +887,11 @@ with ProcessPoolExecutor(max_workers=4) as executor:
 
 ### 4.5 GIL 与并发选择
 
-Python 的 GIL（全局解释器锁）限制了同一时间只能有一个线程执行 Python 字节码。选择并发模型的原则：
+GIL（全局解释器锁）限制同一时刻只有一个线程执行 Python 字节码。选择原则：
 
 - **I/O 密集型任务**：多线程或异步 IO
 - **CPU 密集型任务**：多进程
 - **高并发网络应用**：异步 IO（asyncio）
-
 
 ## 第五部分：测试与调试
 
@@ -943,8 +927,6 @@ if __name__ == "__main__":
 ```
 
 ### 5.2 pytest
-
-pytest 是更现代化的测试框架：
 
 ```python
 # test_example.py
@@ -995,7 +977,6 @@ logger.warning("警告信息")
 logger.error("错误信息")
 ```
 
-
 ## 第六部分：性能优化
 
 ### 6.1 性能分析（Profiling）
@@ -1031,10 +1012,8 @@ print(timeit.timeit('slow_function()', globals=globals(), number=10))
 ```python
 # 1. 使用局部变量
 def optimized_sum(data):
-    local_sum = 0
-    local_append = local_sum  # 错误示例
-    # 正确：直接使用 sum()
-    return sum(data)
+    local_sum = sum
+    return local_sum(data)
 
 # 2. 列表推导 vs 循环
 # 慢速
@@ -1095,12 +1074,11 @@ class Person:
         self.age = age
 ```
 
-
 ## 第七部分：Python 生态与应用
 
 ### 7.1 Web 开发
 
-Python 主流的 Web 框架：
+主流框架：
 
 - **Django**：全功能框架，适合大型项目
 - **Flask**：轻量级框架，灵活易用
@@ -1155,7 +1133,7 @@ plt.show()
 
 ### 7.3 机器学习与人工智能
 
-核心库：
+主要库：
 
 - **scikit-learn**：传统机器学习
 - **TensorFlow** / **PyTorch**：深度学习
@@ -1175,8 +1153,6 @@ print(model.predict([[5]]))  # 预测值接近 10
 ```
 
 ### 7.4 自动化与脚本
-
-Python 是自动化任务的利器：
 
 ```python
 import os
@@ -1232,15 +1208,14 @@ def scrape_website(url):
 # result = scrape_website("https://example.com")
 ```
 
-
 ## 第八部分：最佳实践与设计模式
 
 ### 8.1 代码质量
 
-遵循以下原则编写高质量代码：
+原则：
 
 - **PEP 8 规范**：一致的代码风格
-- **类型提示**：使用 type hints 提高代码可读性
+- **类型提示**：type hints 提高代码可读性
 - **文档字符串**：为函数、类、模块编写文档
 - **代码复用**：DRY（Don't Repeat Yourself）原则
 - **高内聚低耦合**：模块化设计
@@ -1321,4 +1296,3 @@ class Sorter:
     def sort(self, data: List[int]) -> List[int]:
         return self.strategy.sort(data)
 ```
-

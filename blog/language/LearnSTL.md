@@ -1,10 +1,6 @@
-# C++ STL 完全学习指南：从入门到进阶
+# C++ STL
 
-## 第一部分：入门篇
-
-### 一、STL 的六大组件
-
-STL 由六大组件构成：
+## 1. STL 六大组件
 
 | 组件 | 说明 |
 |------|------|
@@ -15,16 +11,15 @@ STL 由六大组件构成：
 | **适配器（Adapters）** | 对已有组件进行封装，改变其接口 |
 | **分配器（Allocators）** | 负责内存分配与管理 |
 
-STL 的核心思想是**算法与容器独立**，通过迭代器连接，配合函数对象实现灵活扩展。
+核心思想：算法与容器独立，通过迭代器连接，函数对象负责定制。
 
+## 2. 容器
 
-### 二、容器（Containers）
+容器分为四类：序列容器、有序关联容器、无序关联容器、容器适配器。
 
-容器是 STL 中用于存储数据的数据结构。容器大致分为四类：**序列容器、有序关联容器、无序关联容器、容器适配器**。
+### 2.1 序列容器
 
-#### 2.1 序列容器（Sequence Containers）
-
-序列容器中的元素按线性顺序存储，保持元素的插入顺序。
+元素按线性顺序存储，保持插入顺序。
 
 | 容器 | 说明 | 头文件 |
 |------|------|--------|
@@ -34,7 +29,8 @@ STL 的核心思想是**算法与容器独立**，通过迭代器连接，配合
 | `forward_list` | C++11 引入，单向链表 | `<forward_list>` |
 | `array` | C++11 引入，定长数组，C 风格数组的简单包装 | `<array>` |
 
-**vector 基本用法示例：**
+**vector 示例**
+
 ```cpp
 #include <vector>
 #include <iostream>
@@ -55,7 +51,8 @@ int main() {
 }
 ```
 
-**list 基本用法示例：**
+**list 示例**
+
 ```cpp
 #include <list>
 #include <iostream>
@@ -77,9 +74,9 @@ int main() {
 }
 ```
 
-#### 2.2 关联容器（Associative Containers）
+### 2.2 关联容器
 
-关联容器通过键值对来存储和访问元素，能提供快速的查找功能，通常基于红黑树实现，元素自动按键排序。
+按键组织元素，通常基于红黑树，自动按键排序，查找快。
 
 | 容器 | 说明 | 头文件 |
 |------|------|--------|
@@ -88,7 +85,8 @@ int main() {
 | `map` | 键值对，键唯一 | `<map>` |
 | `multimap` | 键值对，键可重复 | `<map>` |
 
-**set 基本用法示例：**
+**set 示例**
+
 ```cpp
 #include <set>
 #include <iostream>
@@ -111,7 +109,8 @@ int main() {
 }
 ```
 
-**map 基本用法示例：**
+**map 示例**
+
 ```cpp
 #include <map>
 #include <iostream>
@@ -133,9 +132,9 @@ int main() {
 }
 ```
 
-#### 2.3 无序容器（Unordered Containers）
+### 2.3 无序容器
 
-C++11 引入，基于哈希表实现，元素无序存储，只关心"元素是否存在"或"键与值的对应关系"。
+C++11 引入，基于哈希表，元素无序，只关注元素是否存在或键值对应。
 
 | 容器 | 说明 | 头文件 |
 |------|------|--------|
@@ -144,7 +143,8 @@ C++11 引入，基于哈希表实现，元素无序存储，只关心"元素是�
 | `unordered_map` | 无序映射，键唯一 | `<unordered_map>` |
 | `unordered_multimap` | 无序映射，键可重复 | `<unordered_map>` |
 
-**unordered_map 基本用法示例：**
+**unordered_map 示例**
+
 ```cpp
 #include <unordered_map>
 #include <iostream>
@@ -164,9 +164,9 @@ int main() {
 }
 ```
 
-#### 2.4 容器适配器（Container Adapters）
+### 2.4 容器适配器
 
-容器适配器并不是真正的容器，它们对容器进行包装，使其表现出另一种行为。
+适配器不是容器，而是包装已有容器、改变其接口。
 
 | 适配器 | 说明 | 默认底层容器 | 头文件 |
 |--------|------|-------------|--------|
@@ -174,7 +174,8 @@ int main() {
 | `queue` | 先进先出（FIFO） | `deque` | `<queue>` |
 | `priority_queue` | 优先级队列 | `vector` | `<queue>` |
 
-**stack 基本用法示例：**
+**stack 示例**
+
 ```cpp
 #include <stack>
 #include <iostream>
@@ -193,27 +194,17 @@ int main() {
 }
 ```
 
-#### 2.5 容器的共有函数
+### 2.5 容器共有函数
 
-所有 STL 容器都提供以下共有函数：
+所有容器都提供 `begin()` / `cbegin()`、`end()` / `cend()`、`size()`、`empty()`、`clear()`、`swap()`。
 
-| 函数 | 说明 |
-|------|------|
-| `begin()` / `cbegin()` | 返回指向开头元素的迭代器 |
-| `end()` / `cend()` | 返回指向末尾下一个元素的迭代器 |
-| `size()` | 返回容器内元素个数 |
-| `empty()` | 返回容器是否为空 |
-| `clear()` | 清空容器 |
-| `swap()` | 交换两个容器 |
+## 3. 迭代器
 
+迭代器提供访问容器元素的统一方式，可视为指向元素的指针，遍历时不必关心容器内部实现。
 
-### 三、迭代器（Iterators）
+### 3.1 迭代器分类
 
-迭代器是 STL 中最重要的概念之一，它提供了一种访问容器内元素的统一方式。可以把迭代器理解为指向容器元素的指针，通过迭代器可以遍历容器中的元素，而无需关心容器的内部实现细节。
-
-#### 3.1 迭代器的分类
-
-迭代器分为五种类别，形成层次结构：
+五类迭代器，层次包含：随机访问 > 双向 > 正向 > 输入/输出。
 
 | 类别 | 说明 | 支持的操作 | 典型容器 |
 |------|------|-----------|---------|
@@ -223,9 +214,7 @@ int main() {
 | **双向迭代器** | 可读写，双向移动 | `++`, `--`, `*` | `list`, `set`, `map` |
 | **随机访问迭代器** | 最强大，支持随机访问 | `++`, `--`, `+`, `-`, `[]`, `<`, `>` | `vector`, `array`, `deque` |
 
-迭代器类别之间是**层次包含**关系：随机访问迭代器 > 双向迭代器 > 正向迭代器 > 输入/输出迭代器。
-
-#### 3.2 迭代器的基本操作
+### 3.2 迭代器基本操作
 
 ```cpp
 #include <vector>
@@ -252,50 +241,27 @@ int main() {
 }
 ```
 
-#### 3.3 迭代器的有效性
+### 3.3 迭代器有效性
 
-使用迭代器时需要注意：
-- 迭代器必须合法有效
-- 不能解引用尾后迭代器（`end()`）
-- 区间必须合法：指向同一容器，从第一个迭代器出发能够到达第二个迭代器
+- 迭代器必须合法有效。
+- 不能解引用尾后迭代器（`end()`）。
+- 区间必须合法：指向同一容器，从第一个迭代器出发能够到达第二个迭代器。
 
+## 4. 算法
 
-### 四、算法（Algorithms）
+算法是操作容器元素的函数模板，通过迭代器访问元素，与容器解耦；主要分布在 `<algorithm>` 和 `<numeric>`。
 
-STL 算法是用于操作容器中数据的函数模板，通过迭代器来访问容器中的元素，实现算法与容器的解耦。
+### 4.1 常用算法分类
 
-STL 提供了约 60 多种通用算法，主要分布在 `<algorithm>` 和 `<numeric>` 头文件中。
+**非变序**（不修改元素）：`find` / `find_if`、`count` / `count_if`、`for_each`、`adjacent_find`（查找相邻重复元素）。
 
-#### 4.1 常用算法分类
+**变序**：`copy` / `copy_if`、`replace` / `replace_if`、`remove` / `remove_if`、`transform`、`reverse`。
 
-**非变序算法**（不修改容器内容）：
-- `find` / `find_if`：查找元素
-- `count` / `count_if`：计数
-- `for_each`：遍历
-- `adjacent_find`：查找相邻重复元素
+**排序与比较**：`sort`（O(n log n)）、`stable_sort`、`partial_sort`、`nth_element`（第 n 个元素落到最终有序位置）、`merge`（合并）、`max` / `min`。
 
-**变序算法**（可能修改容器）：
-- `copy` / `copy_if`：拷贝
-- `replace` / `replace_if`：替换
-- `remove` / `remove_if`：移除
-- `transform`：转换
-- `reverse`：反转
+**数值**（`<numeric>`）：`accumulate`（累加）、`inner_product`（内积）、`partial_sum`（部分和）、`adjacent_difference`（相邻差）。
 
-**排序和比较算法**：
-- `sort`：排序，时间复杂度 O(n log n)
-- `stable_sort`：稳定排序
-- `partial_sort`：部分排序
-- `nth_element`：使第 n 个元素位于其最终有序位置上
-- `merge`：合并
-- `max` / `min`：最大/最小值
-
-**数值算法**（`<numeric>`）：
-- `accumulate`：累加
-- `inner_product`：内积
-- `partial_sum`：部分和
-- `adjacent_difference`：相邻差
-
-#### 4.2 算法使用示例
+### 4.2 算法使用示例
 
 ```cpp
 #include <algorithm>
@@ -329,18 +295,15 @@ int main() {
 }
 ```
 
-#### 4.3 C++98 以来的算法演进
+### 4.3 C++98 以来的算法演进
 
-C++98 标准批准了约 70 个算法，C++11 新增了约 20 个算法。
+C++98 批准约 70 个算法，C++11 新增约 20 个：`all_of`、`any_of`、`none_of`、`copy_if`、`copy_n`、`find_if_not`、`iota`、`is_sorted`、`is_sorted_until`、`shuffle`、`move`、`move_backward` 等。
 
-**C++11 新增算法包括**：`all_of`、`any_of`、`none_of`、`copy_if`、`copy_n`、`find_if_not`、`iota`、`is_sorted`、`is_sorted_until`、`shuffle`、`move`、`move_backward` 等。
+## 5. 函数对象
 
+函数对象行为像函数，实现上是重载了 `operator()` 的类或类模板。
 
-### 五、函数对象（Function Objects / Functors）
-
-函数对象是行为类似函数的对象，从实现角度来看，是重载了 `operator()` 的类或类模板。
-
-#### 5.1 基本用法
+### 5.1 基本用法
 
 ```cpp
 #include <iostream>
@@ -368,25 +331,15 @@ int main() {
 }
 ```
 
-#### 5.2 STL 内置函数对象
+### 5.2 内置函数对象
 
-STL 在 `<functional>` 中提供了多种内置函数对象：
+`<functional>` 提供的函数对象均写作 `std::xxx<T>`：
 
-| 函数对象 | 说明 |
-|----------|------|
-| `std::plus<T>` | 加法 |
-| `std::minus<T>` | 减法 |
-| `std::multiplies<T>` | 乘法 |
-| `std::divides<T>` | 除法 |
-| `std::modulus<T>` | 取模 |
-| `std::negate<T>` | 取负 |
-| `std::equal_to<T>` | 等于 |
-| `std::not_equal_to<T>` | 不等于 |
-| `std::greater<T>` | 大于 |
-| `std::less<T>` | 小于 |
-| `std::logical_and<T>` | 逻辑与 |
-| `std::logical_or<T>` | 逻辑或 |
-| `std::logical_not<T>` | 逻辑非 |
+**算术**：`plus`、`minus`、`multiplies`、`divides`、`modulus`、`negate`。
+
+**比较**：`equal_to`、`not_equal_to`、`greater`、`less`。
+
+**逻辑**：`logical_and`、`logical_or`、`logical_not`。
 
 ```cpp
 #include <functional>
@@ -404,14 +357,11 @@ int main() {
 }
 ```
 
+## 6. 分配器
 
-## 第二部分：进阶篇
+分配器负责内存的配置与释放，容器默认使用 `std::allocator`。
 
-### 六、分配器（Allocators）
-
-分配器负责空间的配置与管理。STL 容器通过分配器来管理内存分配，默认使用 `std::allocator`。
-
-#### 6.1 自定义分配器
+### 6.1 自定义分配器
 
 ```cpp
 #include <memory>
@@ -447,24 +397,15 @@ int main() {
 }
 ```
 
-#### 6.2 分配器的使用场景
+### 6.2 分配器使用场景
 
-自定义分配器的常见应用场景包括：
-- 内存池管理
-- 共享内存分配
-- 内存跟踪和调试
-- 特定硬件的内存分配
+内存池、共享内存、内存跟踪与调试、特定硬件的内存分配。
 
+## 7. 适配器
 
-### 七、适配器（Adapters）
+适配器转换容器、迭代器或函数对象的接口。容器适配器见 2.4，本节讲迭代器与函数对象适配器。
 
-适配器用于转换容器、迭代器或函数对象的接口，使原本不兼容的组件可以一起工作。
-
-#### 7.1 容器适配器
-
-已在 2.4 节介绍，包括 `stack`、`queue`、`priority_queue`。
-
-#### 7.2 迭代器适配器
+### 7.1 迭代器适配器
 
 | 适配器 | 说明 | 头文件 |
 |--------|------|--------|
@@ -475,7 +416,6 @@ int main() {
 | `istream_iterator` | 输入流迭代器 | `<iterator>` |
 | `ostream_iterator` | 输出流迭代器 | `<iterator>` |
 
-**迭代器适配器示例：**
 ```cpp
 #include <iterator>
 #include <vector>
@@ -497,9 +437,7 @@ int main() {
 }
 ```
 
-#### 7.3 函数对象适配器（C++11 之前）
-
-C++11 之前，`<functional>` 提供了多种函数适配器：
+### 7.2 函数对象适配器（C++11 前）
 
 | 适配器 | 说明 |
 |--------|------|
@@ -510,14 +448,13 @@ C++11 之前，`<functional>` 提供了多种函数适配器：
 | `mem_fun` | 成员函数适配器 |
 | `mem_fun_ref` | 成员函数引用适配器 |
 
-**注意**：C++11 之后推荐使用 `std::bind` 和 Lambda 表达式替代这些适配器。
+C++11 之后用 `std::bind` 和 Lambda 表达式替代这些适配器。
 
+## 8. 深入理解迭代器
 
-### 八、深入理解迭代器
+### 8.1 迭代器失效
 
-#### 8.1 迭代器失效
-
-迭代器失效是 STL 使用中最常见的问题之一。不同容器的操作会导致不同的迭代器失效情况。
+不同操作的失效规则：
 
 | 容器 | 操作 | 失效情况 |
 |------|------|---------|
@@ -555,9 +492,9 @@ int main() {
 }
 ```
 
-#### 8.2 迭代器标签（Iterator Tags）
+### 8.2 迭代器标签
 
-STL 使用迭代器标签来区分迭代器类别，用于算法优化：
+迭代器标签区分迭代器类别，用于算法优化：
 
 ```cpp
 #include <iterator>
@@ -576,7 +513,7 @@ void advanced_algorithm(Iterator first, Iterator last) {
 }
 ```
 
-#### 8.3 自定义迭代器
+### 8.3 自定义迭代器
 
 ```cpp
 #include <iterator>
@@ -606,12 +543,9 @@ private:
 };
 ```
 
+## 9. 算法进阶
 
-### 九、算法进阶
-
-#### 9.1 算法复杂度
-
-理解算法的复杂度对于选择合适的算法至关重要：
+### 9.1 算法复杂度
 
 | 算法 | 时间复杂度 | 说明 |
 |------|-----------|------|
@@ -623,9 +557,9 @@ private:
 | `binary_search` | O(log n) | 二分查找 |
 | `lower_bound` / `upper_bound` | O(log n) | 边界查找 |
 
-#### 9.2 算法与 Lambda 表达式
+### 9.2 算法与 Lambda
 
-现代 C++ 中，Lambda 表达式是配合 STL 算法的最佳方式：
+Lambda 是配合算法的主要方式：
 
 ```cpp
 #include <algorithm>
@@ -651,9 +585,9 @@ int main() {
 }
 ```
 
-#### 9.3 并行算法（C++17）
+### 9.3 并行算法（C++17）
 
-C++17 引入了并行算法，可以通过执行策略（Execution Policy）来并行执行算法：
+C++17 通过执行策略（Execution Policy）并行执行算法：
 
 ```cpp
 #include <algorithm>
@@ -674,17 +608,13 @@ int main() {
 }
 ```
 
-执行策略类型：
-- `std::execution::seq`：顺序执行
-- `std::execution::par`：并行执行
-- `std::execution::par_unseq`：并行且向量化执行
+执行策略：`seq` 顺序执行、`par` 并行执行、`par_unseq` 并行且向量化执行，均位于 `std::execution`。
 
+## 10. C++17 / C++20 新特性
 
-### 十、C++17 / C++20 新特性
+### 10.1 范围库（C++20）
 
-#### 10.1 范围库（Ranges，C++20）
-
-C++20 引入了范围库，是对迭代器和泛型算法库的扩展，使得迭代器和算法可以组合使用，并减少错误。
+范围库扩展迭代器与泛型算法，使两者可以组合使用。
 
 ```cpp
 #include <ranges>
@@ -707,9 +637,9 @@ int main() {
 }
 ```
 
-#### 10.2 受约束算法（C++20）
+### 10.2 受约束算法（C++20）
 
-C++20 在 `std::ranges` 命名空间中提供了大多数算法的受约束版本：
+`std::ranges` 提供大多数算法的受约束版本：
 
 ```cpp
 #include <algorithm>
@@ -730,9 +660,9 @@ int main() {
 }
 ```
 
-#### 10.3 C++17 新增容器
+### 10.3 多态分配器（C++17）
 
-C++17 引入了 `std::pmr` 命名空间，提供多态分配器支持：
+C++17 引入 `std::pmr` 命名空间，提供多态分配器：
 
 ```cpp
 #include <vector>
@@ -746,10 +676,9 @@ int main() {
 }
 ```
 
+## 11. 性能优化与最佳实践
 
-### 十一、性能优化与最佳实践
-
-#### 11.1 容器选择指南
+### 11.1 容器选择
 
 | 场景 | 推荐容器 | 原因 |
 |------|---------|------|
@@ -763,15 +692,17 @@ int main() {
 | FIFO 操作 | `queue` | 专用接口 |
 | 需要优先级排序 | `priority_queue` | 自动维护堆 |
 
-#### 11.2 性能优化技巧
+### 11.2 性能优化技巧
 
 **1. 预留空间**
+
 ```cpp
 std::vector<int> vec;
 vec.reserve(1000);  // 预分配空间，避免多次 reallocation
 ```
 
-**2. 使用 emplace 代替 push**
+**2. 用 emplace 代替 push**
+
 ```cpp
 std::vector<std::pair<int, std::string>> vec;
 vec.emplace_back(1, "hello");  // 直接在容器中构造
@@ -779,6 +710,7 @@ vec.push_back({1, "hello"});   // 先构造再移动
 ```
 
 **3. 避免不必要的拷贝**
+
 ```cpp
 // 不好的做法
 for (auto x : vec) { ... }  // 拷贝每个元素
@@ -789,51 +721,24 @@ for (auto&& x : vec) { ... }       // 完美转发
 ```
 
 **4. 选择合适的算法**
-- 小数据量使用线性查找，大数据量考虑二分查找
-- 对已排序数据使用 `lower_bound` / `upper_bound`
-- 使用 `nth_element` 而非完整排序（仅需第 n 个元素时）
 
-#### 11.3 常见陷阱
+- 小数据量用线性查找，大数据量考虑二分查找。
+- 已排序数据用 `lower_bound` / `upper_bound`。
+- 只需第 n 个元素时用 `nth_element`，不必完整排序。
 
-1. **迭代器失效**：修改容器后，原有迭代器可能失效
-2. **尾后迭代器解引用**：`end()` 不指向有效元素
-3. **空容器操作**：对空容器调用 `front()` / `back()` 是未定义行为
-4. **比较器不严格弱序**：自定义比较器必须满足严格弱序要求
-5. **在遍历中修改容器**：可能导致迭代器失效或未定义行为
+### 11.3 常见陷阱
 
+1. 迭代器失效：修改容器后，原有迭代器可能失效。
+2. 解引用尾后迭代器：`end()` 不指向有效元素。
+3. 空容器操作：对空容器调用 `front()` / `back()` 是未定义行为。
+4. 比较器不满足严格弱序：自定义比较器必须满足严格弱序。
+5. 遍历中修改容器：可能导致迭代器失效或未定义行为。
 
-### 十二、总结
+## 附录：常用头文件速查
 
-STL 是 C++ 编程不可或缺的工具库，掌握 STL 是成为优秀 C++ 开发者的必经之路。
-
-**学习路径建议**：
-
-1. **入门阶段**：掌握常用容器（`vector`、`list`、`map`、`set`）的基本操作，熟悉迭代器的使用
-2. **进阶阶段**：深入理解各种容器的内部实现和性能特点，掌握 STL 算法的使用
-3. **高级阶段**：理解分配器、适配器的工作原理，能够自定义迭代器和分配器，熟悉 C++17/20 的新特性
-
-STL 就像一个强大的工具箱，里面装满了各种各样实用的工具。熟练使用这些工具，能够大大提高开发效率和代码质量。
-
-
-### 附录：常用头文件速查
-
-| 头文件 | 内容 |
-|--------|------|
-| `<vector>` | `vector` 容器 |
-| `<deque>` | `deque` 容器 |
-| `<list>` | `list` 容器 |
-| `<forward_list>` | `forward_list` 容器 |
-| `<array>` | `array` 容器 |
-| `<set>` | `set`、`multiset` 容器 |
-| `<map>` | `map`、`multimap` 容器 |
-| `<unordered_set>` | `unordered_set`、`unordered_multiset` 容器 |
-| `<unordered_map>` | `unordered_map`、`unordered_multimap` 容器 |
-| `<stack>` | `stack` 容器适配器 |
-| `<queue>` | `queue`、`priority_queue` 容器适配器 |
-| `<algorithm>` | 通用算法 |
-| `<numeric>` | 数值算法 |
-| `<iterator>` | 迭代器和迭代器适配器 |
-| `<functional>` | 函数对象和函数适配器 |
-| `<memory>` | 分配器 |
-| `<ranges>` | 范围库（C++20） |
-| `<execution>` | 并行执行策略（C++17） |
+- **容器**：`<vector>`、`<deque>`、`<list>`、`<forward_list>`、`<array>`、`<set>`、`<map>`、`<unordered_set>`、`<unordered_map>`
+- **容器适配器**：`<stack>`、`<queue>`
+- **算法**：`<algorithm>`、`<numeric>`
+- **迭代器与函数对象**：`<iterator>`、`<functional>`
+- **内存**：`<memory>`
+- **范围与执行**：`<ranges>`、`<execution>`
