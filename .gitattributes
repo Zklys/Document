@@ -1,0 +1,11 @@
+# 统一文本处理：仓库内以 LF 存储，检出时按各平台习惯转换
+* text=auto
+
+# Markdown 笔记按文本处理
+*.md      text
+
+# 图片按二进制处理，不参与文本差异比较
+*.jpg     binary
+*.jpeg    binary
+*.png     binary
+*.gif     binary
