@@ -1,20 +1,16 @@
-# CMake 的使用方法
+# CMake 实践
 
 - 另一篇：[CMake 系统性指南](CMake.md)。
 
 ---
 
-## CMake 的简单介绍
+## 1. CMake 简介
 
-`cmake`是一个辅助项目程序构建系统，能够跨平台构建程序。
-能够生成`makefile`文件，能够让你省去编写复杂`makefile`文件的功夫`（大概也许会重新花在编写cmake的文件上？）`
+`cmake` 是跨平台的构建系统生成工具，读取 `CMakeLists.txt` 生成 `Makefile` 等构建文件，无需手写 `makefile`。
 
-## 一个基础的cmake项目
+## 2. 基础项目
 
-- 一般来说cmake的内容都写在一个叫做`CMakeLists.txt`的文件里。
-- 而文件生成则是在`build`文件夹中。
-
-示例：如下
+CMake 的配置写在 `CMakeLists.txt`（下文简称 CML）中，生成结果一般放在 `build` 目录。
 
 ```cmake
 cmake_minimum_required(VERSION 4.3.0)
@@ -22,8 +18,7 @@ project(Hello)
 add_executable(hello hello.cpp)
 ```
 
-`cmake_minimum_required()`是用来设置cmake的最低版本的，意思是你的cmake版本最低不能低于这个版本。
-如果我们把参数改为4.4的话，cmake会报出这样的错误：如下
+`cmake_minimum_required()` 设置 CMake 的最低版本。本机版本低于该值时，配置阶段报错。把参数改为 4.4 后：
 
 ```text
 CMake Error at CMakeLists.txt:1 (cmake_minimum_required):
@@ -33,37 +28,34 @@ CMake Error at CMakeLists.txt:1 (cmake_minimum_required):
 -- Configuring incomplete, errors occurred!
 ```
 
-我们查看报错的信息的话，能够看出`CMake Error at CMakeLists.txt:1 (cmake_minimum_required):`这一行cmake报出了错误出现在了`CMakeLists.txt`文件的第一行的`cmake_minimum_required`中。
-第二行cmake报出了我们需要4.4的cmake而我使用的cmake是4.3.2版本所以报出了错误。
+第一行 `CMake Error at CMakeLists.txt:1 (cmake_minimum_required):` 指出错误位置：`CMakeLists.txt` 第 1 行的 `cmake_minimum_required`。第二行给出原因：需要 4.4，当前为 4.3.2。
 
-### cmake的运行
+### 2.1 运行 CMake
 
-我们可以在项目文件夹中创建一个叫做`build`然后在此文件夹中运行`cmake ..`
-因为你的`CMakeLists.txt`文件大概在上一级目录，所以我们使用`..`来代替上级目录。
+在项目目录下创建 `build`，进入其中执行 `cmake ..`。CML 位于上一级目录，因此用 `..` 指代。
 
-- cmake会自动识别`CMakeList.txt`文件。
+- CMake 会自动查找 `CMakeLists.txt`。
 
-然后cmake会在你当前所在的文件夹，也就是`build`文件夹中生成cmake的缓存和所有cmake运行所需要的文件以及最重要的`Makefile`文件。
-随后使用`make`命令或`cmake --build .`即可生成目标文件。
-如果你不想移动你的目录位置的话，你可以使用以下的命令来生成。
+执行后，当前目录（即 `build`）中生成缓存和 CMake 运行所需的全部文件，其中最重要的是 `Makefile`。随后用 `make` 或 `cmake --build .` 生成目标文件。
 
-- `cmake -B build`这条命令指定了cmake的生成目录。（你可以指定`CMakeList.txt`的搜索目录，不指定就为当前目录。）
-- `cmake --build ./build`这条命令是生成目标文件，但指定了目录为当前目录中的build目录。
+不切换目录时，可用以下命令：
 
-#### 可能出现的问题
+- `cmake -B build`：指定生成目录。CML 的搜索目录不指定时默认为当前目录。
+- `cmake --build ./build`：生成目标文件，目录指定为当前目录下的 `build`。
 
-如果你并没有生成`makefile`文件，那么极有可能是你的cmake默认并没有采用makefile的生成策略。
-你可以使用`cmake --help`命令在`The following generators are available on this platform (* marks default)`行和此行下面看到你的cmake支持的生成策略和默认使用的策略（带*号的）
-解决方法就是在使用中可以使用参数手动指定。
-`cmake -G "" ..`双引号中填入你希望使用并且系统所支持的生成策略。
+### 2.2 没有生成 Makefile
 
-## cmake官方的文档教程
+没有生成 `Makefile`，通常是默认生成器不是 Makefile。执行 `cmake --help`，`The following generators are available on this platform (* marks default)` 一行及下方会列出支持的生成器与默认项（带 `*`）。用 `-G` 手动指定：
 
-接下来就会根据cmake的官方教程流程来书写。
+`cmake -G "" ..`
 
-- 官方的版本为4.3.3
+双引号内填入系统支持且希望使用的生成器。
 
-### step1
+## 3. CMake 官方教程
+
+以下按官方教程 Step 1 的流程整理，官方版本为 4.3.3。
+
+### 3.1 可执行目标（TODO1–TODO4）
 
 文件结构：
 
@@ -81,7 +73,7 @@ CMake Error at CMakeLists.txt:1 (cmake_minimum_required):
         Tutorial.cxx
 ```
 
-在最外层的`CMakeLists.txt`文件中：
+最外层的 `CMakeLists.txt`：
 
 ```cmake
 # TODO1: Set the minimum required version of CMake to be 3.23
@@ -108,24 +100,23 @@ CMake Error at CMakeLists.txt:1 (cmake_minimum_required):
 
 ```
 
-在todo1中我们需要使用`cmake_minimum_required(VERSION 3.23)`来将cmake的最低版本设置为3.23。
+TODO1：用 `cmake_minimum_required(VERSION 3.23)` 把最低版本设为 3.23。
 
-> - 一般来说`cmake_minimum_requide()`都会是CML(CMakeLists.txt的缩写)的第一条命令。
+> `cmake_minimum_required()` 通常是 CML 的第一条命令。
 
-在tudo2中我们需要使用`project(Tutorial)`来设置项目名称为Tutorial。
+TODO2：用 `project(Tutorial)` 设置项目名。
 
-> - `project()`在实际运行过程中会设置许多cmake需要使用的变量，如果你希望了解或者手动设置可以查看官方文档。
+> `project()` 会设置许多 CMake 使用的变量，详见官方文档。
 
-在todo3中我们要使用`add_executable(Tutorial)`来为项目添加一个名为`Tutorial`的可执行目标。
+TODO3：用 `add_executable(Tutorial)` 添加名为 `Tutorial` 的可执行目标。
 
-> - 与之前不同的是，我们将使用另一种方式将源文件和可执行目标关联，在第四步中。
+> 源文件不在这一步关联，改用 TODO4 的方式。
 
-在tudo4中我们要使用`target_sources(Tutorial PRIVATE Tutorial/Tutorial.cxx)`来将可执行目标和当前目录下，Tutorial目录内的Tutorial.cxx文件关联。
+TODO4：用 `target_sources(Tutorial PRIVATE Tutorial/Tutorial.cxx)` 关联 `Tutorial/Tutorial.cxx`。
 
-> - 在这里对于可执行文件Tutorial没有任何其他目标会链接它，所以它的源文件、库等等都需要设置为`PRIVATE`
-> - 即使你不设置也不会报错，但是为了防止人类的各种迷惑操作，请使用`PRIVATE`将其限定。
+> 没有其他目标链接 `Tutorial`，所以它的源文件、库等都设为 `PRIVATE`。不设置也不会报错，但 `PRIVATE` 可以避免误用。
 
-ok！暂时性的，我们编写了一份可用的CML，现在你可以执行它了。
+至此 CML 可用：
 
 ```cmake
 # TODO1: Set the minimum required version of CMake to be 3.23
@@ -138,7 +129,7 @@ add_executable(Tutorial)
 target_sources(Tutorial PRIVATE Tutorial/Tutorial.cxx)
 ```
 
-在cmake官方给的Tutorial.cxx的作用是给一个数开平方。
+官方提供的 `Tutorial.cxx` 用于对一个数开平方。
 
 ```cpp
 // A simple program that computes the square root of a number
@@ -167,15 +158,13 @@ int main(int argc, char* argv[])
 
 ```
 
----
-在todo5中我们要使用`add_library(MathFunctions)`它的作用是构建一个叫做MathFunctions的库。
+### 3.2 库目标（TODO5–TODO6）
 
-> - `add_library()`的作用和`add_executable()`很相似，但它是针对库的。
+TODO5：用 `add_library(MathFunctions)` 构建名为 `MathFunctions` 的库。
 
-在todo6中我们要将`MathFunctions.cxx`所需要的头文件添加进去。
-在这个文件中加入`#include "MathFunctions.h"`
-同时我们也要把`MathFunctions`所需要的源文件和头文件与它关联起来。
-我们使用如下的方式：
+> `add_library()` 与 `add_executable()` 用法相似，针对的是库。
+
+TODO6：在 `MathFunctions.cxx` 中加入 `#include "MathFunctions.h"`，并把源文件和头文件关联到 `MathFunctions`：
 
 ```cmake
 target_sources(
@@ -190,17 +179,13 @@ PUBLIC
 )
 ```
 
-前两个参数分别是名称和依赖文件，和之前类似就不再详细解释了。
-注意到我们这里使用了新的声明参数`PUBLIC`表示共有，表示其他东西也可能依赖这些东西。
+前两个参数是名称和依赖文件。`PUBLIC` 表示其他目标也可能依赖这些内容。
 
-> - `FILE_SET`是cmake-3.23+之后新加入的功能，目的是让依赖文件更好管理，它的作用是创建一个文件集合，由你自己起名，我这边叫做：`math_lib`它不允许大写字母和数字开头。
-> - `TYPE HEADERS`表明这个文件集合管理的是头文件（其他参数之后再进行讨论）
-> cmake是允许你的文件集合的名字和类型相同的，所以你可以省略掉`TYPE HEADERS`直接写`FILE_SET HEADERS`
-> 这在小型项目或者维护难度不高的情况下是完全没问题的，但更推荐你书写完整格式。
-> - `BASE_DIRS`表示你依赖文件的存储位置。
-> - `FILES`表示你具体有哪些文件。
+> `FILE_SET` 是 CMake 3.23+ 的功能，用于管理依赖文件。它创建一个文件集合，名字由使用者指定，本例为 `math_lib`；名字不允许以大写字母或数字开头。
+> `TYPE HEADERS` 表示该集合管理头文件。集合名与类型相同时可省略，直接写 `FILE_SET HEADERS`；小型项目或维护量低时可以这样写，但推荐完整格式。
+> `BASE_DIRS` 是依赖文件的存放位置，`FILES` 是具体文件。
 
-MathFunctions.h中的内容。
+`MathFunctions.h`：
 
 ```cpp
 #pragma once
@@ -211,7 +196,7 @@ double sqrt(double x);
 
 ```
 
-MathFunctions.cxx中的内容。
+`MathFunctions.cxx`：
 
 ```cpp
 #include <iostream>
@@ -249,29 +234,33 @@ double sqrt(double x)
 
 ```
 
-此时再重新构建cmake和我们的目标文件你会看到库文件也一并生成了。
+重新构建后，库文件一并生成。
+
+### 3.3 链接与子目录（TODO7–TODO13）
 
 ---
-在todo7中我们需要将库链接到我们的可执行文件中去。
+
+TODO7：把库链接到可执行文件。
+
 `target_link_libraries(Tutorial PRIVATE MathFunctions)`
 
-> - `PRIVATE INTERFACE PUBLIC`这是cmake中的范围关键词。
-> - `PRIVATE`只属于当前目标，在被链接时不传递。
-> - `INTERFACE`不属于当前目标，在被链接时传递。
-> - `PUBLIC`属于当前目标，在被链接时传递。
-> 更为详细的介绍请参考官方介绍。
+> `PRIVATE`、`INTERFACE`、`PUBLIC` 是范围关键词：`PRIVATE` 属于当前目标，被链接时不传递；`INTERFACE` 不属于当前目标，被链接时传递；`PUBLIC` 属于当前目标，被链接时传递。详见官方文档。
 
-在todo8中我们要把`MathFunctions`的头文件加入`Tutorial.cxx`文件中。
-在todo9中我们要调用`MathFunctions.h`中的函数，代替原有的std中的函数。
-在todo10中我们要把原本的CML中的关于`Tutorial`的操作移动到`Tutorial`目录下的CML中，注意路径变化。
-在todo11中我们需要将子目录中的`CMakeLists.txt`纳入管理或者调用（是的CML还可以使用其他目录中的CML）
-我们使用`add_subdirectory(Tutorial)`来将`Tutorial`纳入管理。
-在todo12、todo13中我们使用同样的方法将原本CML中关于`MathFunctions`的操作转移，并将其纳入管理。
+TODO8：在 `Tutorial.cxx` 中加入 `MathFunctions` 的头文件。
 
-- 为了防止构建时与原本的构建出现冲突，我们可以使用`--clean-first`参数来清理。
+TODO9：调用 `MathFunctions.h` 中的函数，替换 `std` 中的实现。
 
-使用`cmake --build build --clean-first`来生成。
-以下时所有文件的内容。
+TODO10：把 `Tutorial` 相关的命令移到 `Tutorial` 目录下的 CML，并更新路径。
+
+TODO11：用 `add_subdirectory(Tutorial)` 把该子目录纳入构建。
+
+TODO12、TODO13：用同样的方法迁移 `MathFunctions` 相关的命令，并纳入构建。
+
+为避免与原有构建冲突，可用 `--clean-first` 清理：
+
+`cmake --build build --clean-first`
+
+以下是全部文件内容。
 
 `Tutorial.cxx`
 
@@ -417,4 +406,4 @@ PUBLIC
 )
 ```
 
-- 我将所有已经不需要的操作注释了，如果不喜欢可以自行删除。
+- 已不需要的操作均已注释，可以直接删除。

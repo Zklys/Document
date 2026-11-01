@@ -1,11 +1,10 @@
-# CMake 系统性指南：从入门到精通
+# CMake
 
+## 第一部分：核心概念
 
-## 第一部分：核心概念与认知
+### 1.1 什么是 CMake
 
-### 1.1 什么是 CMake？
-
-CMake 是一个跨平台的自动化构建系统生成器。它**本身不是编译器**，而是一个**构建文件生成工具**（Build System Generator）。它的核心作用是读取名为 `CMakeLists.txt` 的配置文件，根据当前的操作系统和编译器环境，生成标准的构建文件：
+CMake 是跨平台的自动化构建系统生成器，本身不是编译器。它读取 `CMakeLists.txt`，按当前操作系统和编译器生成标准构建文件，再交给对应构建工具完成编译链接。
 
 | 平台 | 生成的构建文件 |
 |------|---------------|
@@ -13,34 +12,17 @@ CMake 是一个跨平台的自动化构建系统生成器。它**本身不是编
 | Windows | Visual Studio Solution (.sln) / MinGW Makefile |
 | macOS | Xcode Project |
 
-调用对应的构建工具（如 `make`、`MSBuild`、`xcodebuild`）完成实际的编译和链接工作。
+它解决两个问题：跨平台要维护多套构建配置；手写 Makefile 成本高。一份 `CMakeLists.txt` 即可在各平台生成构建系统。分工：CMake 生成构建文件，Make/Ninja/MSBuild 执行构建，GCC/Clang/MSVC 编译源码。
 
-### 1.2 为什么需要 CMake？
+### 1.2 核心术语
 
-在没有 CMake 的时代，C/C++ 工程构建面临两大核心痛点：
+- **Target（目标）**：构建产物，可执行文件（Executable）或库（Library）。
+- **Command（指令）**：`CMakeLists.txt` 中的函数调用，如 `project()`、`add_executable()`。
+- **Variable（变量）**：存储信息的容器，如 `${CMAKE_SOURCE_DIR}`。
+- **源目录（Source Directory）**：`CMakeLists.txt` 所在目录。
+- **二进制目录（Build Directory）**：存放 object 文件、库和可执行文件。
 
-- **跨平台适配成本极高**：不同平台有完全不同的构建系统，每新增一个平台就要手写一套适配配置
-- **手写构建配置门槛高**：Makefile 语法晦涩复杂，中大型项目的依赖管理、链接规则维护难度极大
-
-CMake 的核心价值可以用一句话概括：**一次编写规则，多处生成构建系统**。你只需维护一份 `CMakeLists.txt`，在不同平台上用不同生成器即可构建。
-
-### 1.3 形象化理解
-
-如果把开发软件比作盖一栋房子：
-- **CMake（设计院）** ：读取你的设计需求（`CMakeLists.txt`），绘制出详细的施工图纸
-- **Makefile/.sln（施工图纸）** ：详细规定材料处理顺序（编译、链接）
-- **Make/Ninja/MSBuild（工头）** ：读懂图纸，指挥工人干活
-- **Compiler [GCC/Clang/MSVC]（工人）** ：真正把源码翻译成机器码
-
-### 1.4 核心术语
-
-- **Target（目标）** ：CMake 构建出的最终产物，通常是可执行文件（Executable）或库文件（Library）
-- **Command（指令）** ：`CMakeLists.txt` 中的函数调用，如 `project()`、`add_executable()`
-- **Variable（变量）** ：用于存储信息的容器，如 `${CMAKE_SOURCE_DIR}`
-- **源目录（Source Directory）** ：项目源代码所在目录，`CMakeLists.txt` 所在的位置
-- **二进制目录（Build Directory）** ：CMake 将生成的 object 文件、库和可执行文件放在这里
-
-### 1.5 安装 CMake
+### 1.3 安装
 
 ```bash
 # Debian / Ubuntu
@@ -53,12 +35,11 @@ sudo yum install cmake
 cmake --version
 ```
 
-推荐使用 CMake 3.10+，更建议 3.16+ 或 3.20+。如需更快的构建，可安装 Ninja：
+推荐 3.10+，更建议 3.16+ 或 3.20+。需要更快的构建可安装 Ninja：
 
 ```bash
 sudo apt-get install ninja-build
 ```
-
 
 ## 第二部分：快速入门
 
@@ -99,7 +80,7 @@ add_executable(MyApp main.cpp)
 
 ### 2.3 标准构建流程
 
-CMake 强烈推荐使用**外部构建**（Out-of-source Build），即源码与编译产物分离：
+推荐**外部构建**（Out-of-source Build），源码与编译产物分离：
 
 ```bash
 # 步骤1：创建并进入构建目录
@@ -115,7 +96,8 @@ make
 ./MyApp
 ```
 
-**更现代的方式**（CMake 3.13+）：
+更现代的方式（3.13+），`-B` 指定构建目录，`-S` 指定源码目录：
+
 ```bash
 # 一步创建构建目录并配置
 cmake -B build -S .
@@ -127,48 +109,40 @@ cmake --build build
 ./build/MyApp
 ```
 
-`-B` 指定构建目录，`-S` 指定源码目录。
-
-
 ## 第三部分：CMake 基础语法
 
 ### 3.1 语法核心规则
 
-- **大小写不敏感**：`cmake_minimum_required` 和 `CMAKE_MINIMUM_REQUIRED` 等效，**推荐小写**
-- **指令格式**：`指令(参数1 参数2 ...)`，参数之间用空格或分号分隔
-- **注释**：单行注释用 `#` 开头
-- **变量引用**：使用 `${变量名}`
+- **大小写不敏感**：`cmake_minimum_required` 和 `CMAKE_MINIMUM_REQUIRED` 等效，推荐小写。
+- **指令格式**：`指令(参数1 参数2 ...)`，参数用空格或分号分隔。
+- **注释**：单行注释以 `#` 开头。
+- **变量引用**：`${变量名}`。
 
-### 3.2 核心命令详解
+### 3.2 核心命令
 
 #### cmake_minimum_required
 
-指定运行此 `CMakeLists.txt` 所需的最低 CMake 版本：
+指定运行此文件所需的最低 CMake 版本，并让 CMake 采用该版本的行为：
+
 ```cmake
 cmake_minimum_required(VERSION 3.10)
 cmake_minimum_required(VERSION 3.10...3.20)  # 支持 3.10 到 3.20
 ```
 
-调用时，它确保 CMake 将采用所列版本的行为。
-
 #### project
 
-定义项目名称，CMake 会自动生成相关变量：
+定义项目名称，并自动生成 `PROJECT_NAME`、`PROJECT_VERSION`、`PROJECT_SOURCE_DIR`、`PROJECT_BINARY_DIR`：
+
 ```cmake
 project(MyProject)                           # 最简形式
 project(MyProject VERSION 1.0.0)             # 指定版本
 project(MyProject LANGUAGES CXX CUDA)        # 指定语言（支持 C++ 和 CUDA）
 ```
 
-`project()` 会设置以下变量：
-- `PROJECT_NAME`：项目名称
-- `PROJECT_VERSION`：项目版本
-- `PROJECT_SOURCE_DIR`：项目源码目录
-- `PROJECT_BINARY_DIR`：项目构建目录
-
 #### add_executable
 
 添加可执行文件目标：
+
 ```cmake
 # 单源文件
 add_executable(myapp main.cpp)
@@ -183,7 +157,8 @@ add_executable(myapp ${SOURCES})
 
 #### add_library
 
-添加库目标：
+添加库目标，省略类型时通常生成静态库：
+
 ```cmake
 # 静态库（libmylib.a 或 mylib.lib）
 add_library(mylib STATIC lib.cpp)
@@ -225,8 +200,6 @@ list(APPEND SOURCES extra.cpp)   # 推荐方式
 | `CMAKE_BUILD_TYPE` | 构建类型（Debug/Release） |
 
 ### 3.4 控制流
-
-CMake 支持与其他脚本语言类似的控制流结构。
 
 #### if 条件判断
 
@@ -275,16 +248,15 @@ while(condition)
 endwhile()
 ```
 
-
 ## 第四部分：现代 CMake（Modern CMake）
 
 ### 4.1 目标（Target）的概念
 
-现代 CMake 的核心是以 **目标（Target）** 为中心进行构建配置。目标可以是可执行文件、库或自定义目标。每个目标都有其自己的属性，包括编译选项、链接选项、包含路径等。
+现代 CMake 以**目标（Target）**为中心配置构建。目标可以是可执行文件、库或自定义目标，各自持有编译选项、链接选项、包含路径等属性。
 
 ### 4.2 PUBLIC / PRIVATE / INTERFACE
 
-这三个关键字是理解现代 CMake 依赖传递机制的关键：
+依赖传递机制靠这三个关键字区分：
 
 | 关键字 | 含义 | 使用方（消费者）是否继承 |
 |--------|------|------------------------|
@@ -352,7 +324,7 @@ target_link_libraries(utils PUBLIC math)  # 链接 math 到 utils
 
 ### 4.5 生成器表达式（Generator Expressions）
 
-生成器表达式在构建系统生成期间求值，用于产生特定于每个构建配置的信息。语法形式为 `$<...>`。
+生成器表达式在构建系统生成期间求值，用于产生特定于每个构建配置的信息，语法为 `$<...>`：
 
 ```cmake
 # 条件编译选项（Debug 和 Release 不同）
@@ -372,8 +344,7 @@ $<0:...>   # 永远为假
 $<1:...>   # 永远为真
 ```
 
-生成器表达式支持空格、换行符等，传递给命令时整个表达式应用引号括起来。
-
+表达式内含空格、换行符时，传给命令需整体加引号。
 
 ## 第五部分：文件与目录管理
 
@@ -403,7 +374,7 @@ file(GLOB_RECURSE SOURCES "src/**/*.cpp")  # 递归收集
 aux_source_directory(src SOURCES)
 ```
 
-> **注意**：`file(GLOB)` 收集源文件存在隐患——新增文件不会自动触发 CMake 重新配置，可能导致构建遗漏。推荐显式列出源文件，或配合 `CONFIGURE_DEPENDS` 使用。
+> **注意**：`file(GLOB)` 新增文件不会自动触发重新配置，可能漏编。优先显式列出源文件，或配合 `CONFIGURE_DEPENDS` 使用。
 
 ### 5.3 包含其他 CMake 文件
 
@@ -415,12 +386,11 @@ include(cmake/MyModule.cmake)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake)
 ```
 
-
 ## 第六部分：函数与宏
 
 ### 6.1 函数（Function）
 
-函数有自己的**局部作用域**——函数内定义的变量不会传播回调用者：
+函数有**局部作用域**，内部变量不会传播回调用者：
 
 ```cmake
 function(my_function arg1 arg2)
@@ -436,7 +406,7 @@ my_function("hello" "world" "extra1" "extra2")
 
 ### 6.2 宏（Macro）
 
-宏进行**文本替换**，没有独立的作用域——宏内定义的变量会影响调用者的作用域：
+宏是**文本替换**，没有独立作用域，内部变量会影响调用者：
 
 ```cmake
 macro(my_macro arg1 arg2)
@@ -456,7 +426,7 @@ message(STATUS "MACRO_VAR = ${MACRO_VAR}")  # 可以访问到
 | 变量传递 | 参数作为变量 | 参数进行字符串替换 |
 | 返回值 | 通过 `PARENT_SCOPE` 返回 | 直接修改调用者变量 |
 
-函数推荐用于大多数场景，因为其作用域更可控。如需从函数返回变量给调用者：
+函数作用域更可控，多数场景优先使用。从函数返回变量给调用者：
 
 ```cmake
 function(get_version)
@@ -467,15 +437,11 @@ get_version()
 message(STATUS "Version: ${VERSION}")
 ```
 
-
 ## 第七部分：依赖管理
 
 ### 7.1 find_package
 
-`find_package` 用于查找系统中已安装的依赖包。它有两种模式：
-
-- **Module 模式**：搜索 `Find<Package>.cmake` 文件
-- **Config 模式**：搜索 `<Package>Config.cmake` 文件（通常由包本身提供）
+`find_package` 查找系统中已安装的依赖包，有两种模式：Module 模式搜索 `Find<Package>.cmake`；Config 模式搜索 `<Package>Config.cmake`（通常由包本身提供）。
 
 ```cmake
 # 基本用法
@@ -515,7 +481,7 @@ find_file(CONFIG_FILE config.json)
 
 ### 7.3 自定义 Find 模块
 
-当第三方库不提供 Config 文件时，可以自己编写 Find 模块：
+第三方库不提供 Config 文件时，自行编写 Find 模块：
 
 ```cmake
 # 创建 cmake/FindMyLib.cmake
@@ -536,7 +502,7 @@ if(MYLIB_FOUND AND NOT TARGET MyLib::MyLib)
 endif()
 ```
 
-然后在 `CMakeLists.txt` 中：
+在 `CMakeLists.txt` 中引用：
 
 ```cmake
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake)
@@ -544,10 +510,9 @@ find_package(MyLib REQUIRED)
 target_link_libraries(myapp PRIVATE MyLib::MyLib)
 ```
 
-
 ## 第八部分：测试（CTest）
 
-CMake 通过 `enable_testing()` 和 `add_test()` 命令与 CTest 直接集成。
+CMake 通过 `enable_testing()` 和 `add_test()` 与 CTest 集成。
 
 ### 8.1 启用测试
 
@@ -591,7 +556,6 @@ ctest -R test1
 ctest -j 4
 ```
 
-
 ## 第九部分：安装与导出
 
 ### 9.1 安装目标
@@ -632,7 +596,7 @@ install(FILES config.json
 
 ### 9.3 导出目标
 
-导出目标使得其他项目可以通过 `find_package` 找到并使用你的库：
+导出后，其他项目可通过 `find_package` 找到并使用你的库：
 
 ```cmake
 # 安装时导出目标
@@ -674,18 +638,18 @@ export(TARGETS mylib
 ```
 
 其他项目使用：
+
 ```cmake
 # 直接使用构建目录中的导出文件
 list(APPEND CMAKE_PREFIX_PATH /path/to/MyLib/build)
 find_package(MyLib REQUIRED)
 ```
 
-
 ## 第十部分：高级特性
 
 ### 10.1 自定义命令（add_custom_command）
 
-`add_custom_command` 用于定义生成特定文件的自定义构建步骤。
+`add_custom_command` 定义生成特定文件的自定义构建步骤。
 
 **第一种签名：生成文件**
 ```cmake
@@ -711,7 +675,7 @@ add_custom_command(
 
 ### 10.2 自定义目标（add_custom_target）
 
-`add_custom_target` 创建一个没有输出的目标，每次构建都会执行：
+`add_custom_target` 创建没有输出的目标，每次构建都会执行：
 
 ```cmake
 # 创建文档生成目标
@@ -732,7 +696,7 @@ add_custom_target(run_tests ALL
 
 ### 10.3 跨平台可移植命令
 
-CMake 提供了 `-E` 选项作为跨平台实用命令：
+`-E` 提供跨平台实用命令：
 
 ```cmake
 # 跨平台复制
@@ -753,7 +717,7 @@ ${CMAKE_COMMAND} -E create_symlink target link
 
 ### 10.4 CMake 预设（Presets）
 
-CMake 3.19+ 支持预设（Presets），可以在 `CMakePresets.json` 中定义常用的配置组合：
+3.19+ 支持预设，可在 `CMakePresets.json` 中定义常用配置组合：
 
 ```json
 {
@@ -780,6 +744,7 @@ CMake 3.19+ 支持预设（Presets），可以在 `CMakePresets.json` 中定义�
 ```
 
 使用预设：
+
 ```bash
 cmake --preset default
 cmake --build build
@@ -787,7 +752,7 @@ cmake --build build
 
 ### 10.5 工具链文件（Toolchain File）
 
-用于交叉编译或指定特定的编译器：
+用于交叉编译或指定特定编译器：
 
 ```cmake
 # toolchain.cmake
@@ -804,10 +769,10 @@ set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 ```
 
 使用：
+
 ```bash
 cmake -DCMAKE_TOOLCHAIN_FILE=toolchain.cmake ..
 ```
-
 
 ## 第十一部分：最佳实践
 
@@ -866,14 +831,13 @@ include(CMakePackageConfigHelpers)
 
 ### 11.3 关键原则
 
-1. **始终使用外部构建**：源码与构建产物分离
-2. **使用 target_* 命令而非 set 命令**：现代 CMake 推荐基于目标的配置
-3. **明确 PUBLIC/PRIVATE/INTERFACE 作用域**：正确管理依赖传递
-4. **避免使用 file(GLOB) 收集源文件**：显式列出源文件更可靠
-5. **CMake 代码应像生产代码一样对待**：保持可维护、优雅和简洁
-6. **指定 CMake 最低版本**：使用 `cmake_minimum_required` 保证兼容性
-7. **使用 CMake 预设**：标准化团队的构建配置
-
+1. **使用外部构建**：源码与构建产物分离。
+2. **用 `target_*` 命令而非 `set` 命令**：基于目标配置。
+3. **明确 PUBLIC/PRIVATE/INTERFACE 作用域**：正确管理依赖传递。
+4. **避免 `file(GLOB)` 收集源文件**：显式列出更可靠。
+5. **用 `cmake_minimum_required` 声明最低版本**：保证兼容性。
+6. **用 CMake 预设标准化构建配置**。
+7. **把 CMake 代码当作生产代码维护**：整洁、可维护、有注释。
 
 ## 第十二部分：常见问题与排查
 
@@ -941,12 +905,3 @@ cmake --build build --target clean
 | `add_custom_command` | 自定义构建命令 |
 | `add_custom_target` | 自定义构建目标 |
 | `message` | 输出信息 |
-
-
-## 结语
-
-CMake 作为 C/C++ 领域事实上的工程构建标准，其核心价值在于 **"一处配置，到处构建"** 。从最基础的单文件项目到复杂的大型工程，CMake 都能提供可靠、可维护的构建方案。
-
-学习 CMake 的最佳路径是**循序渐进**：先掌握核心命令（`cmake_minimum_required`、`project`、`add_executable`、`add_library`、`target_link_libraries`），然后逐步学习现代 CMake 的目标属性管理和依赖传递机制，最后掌握测试、安装、导出等工程化能力。
-
-记住：**把 CMake 代码当作生产代码一样对待**——保持整洁、可维护、有注释，你的团队和未来的自己都会感谢你。
