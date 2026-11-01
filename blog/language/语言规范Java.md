@@ -41,7 +41,7 @@
 
 ### Gradle 标准
 
-```
+```text
 project/
 ├── settings.gradle
 ├── build.gradle
@@ -53,7 +53,7 @@ project/
 
 ### 简单课程布局
 
-```
+```text
 project/
 ├── Main.java
 ├── src/SinglyList.java

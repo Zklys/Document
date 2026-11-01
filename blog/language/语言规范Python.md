@@ -42,7 +42,7 @@
 
 ## 4. 项目目录结构
 
-```
+```text
 project/
 ├── pyproject.toml    # 或 requirements.txt
 ├── .gitignore        # 忽略 venv/, __pycache__/

@@ -73,7 +73,7 @@ gradle init --type java-application
 ```
 
 生成的项目结构如下：
-```
+```text
 my-project/
 ├── build.gradle          # 主构建脚本
 ├── settings.gradle       # 项目配置
@@ -523,7 +523,7 @@ apply<SamplePlugin>()
 
 一个多项目构建由一个**根项目**和一个或多个**子项目**组成：
 
-```
+```text
 my-project/
 ├── settings.gradle.kts          # 声明子项目
 ├── build.gradle.kts             # 根项目构建逻辑（可选）
@@ -579,7 +579,7 @@ dependencies {
 
 `buildSrc` 是 Gradle 项目根目录下的一个特殊目录，包含所有构建逻辑。Gradle 会自动识别 `buildSrc` 目录：
 
-```
+```text
 my-project/
 ├── buildSrc/
 │   ├── build.gradle.kts
@@ -641,7 +641,7 @@ gradle [taskName...] [--option-name...]
 Gradle 守护进程（Daemon）在后台运行，可以显著提升构建速度。Gradle 默认启用守护进程，也可以通过配置强制启用：
 
 在 `gradle.properties` 中：
-```
+```properties
 org.gradle.daemon=true
 ```
 
@@ -655,7 +655,7 @@ export GRADLE_OPTS="-Dorg.gradle.daemon=true"
 并行执行允许 Gradle 并发执行来自不同项目的任务，优化 CPU 利用率：
 
 在 `gradle.properties` 中：
-```
+```properties
 org.gradle.parallel=true
 ```
 
@@ -668,7 +668,7 @@ Gradle 会根据 CPU 核数自动确定最佳并行线程数。
 构建缓存通过重用先前构建的输出，显著提升构建速度：
 
 在 `gradle.properties` 中：
-```
+```properties
 org.gradle.caching=true
 ```
 
@@ -679,7 +679,7 @@ org.gradle.caching=true
 配置缓存是 Gradle 最受期待的功能之一。启用配置缓存后，任务图在首次运行时计算并存储，后续构建直接跳过配置阶段，进入执行阶段。
 
 在 `gradle.properties` 中：
-```
+```properties
 org.gradle.configuration-cache=true
 ```
 

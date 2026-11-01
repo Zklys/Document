@@ -2,7 +2,7 @@
 ## 1. 通用规则
 
 | 规则 | 设定 |
-|------|------|
+|:------:|:------:|
 | 缩进 | 4 空格，禁用 Tab |
 | 行宽 | ≤100 字符 |
 | 类型（类/结构/枚举） | `PascalCase`，如 `SinglyList`, `Color` |
@@ -26,7 +26,7 @@
 - **扩展名**：`.hpp` / `.cpp`。
 - **宏**：`SCREAMING_SNAKE`，如 `MY_VERSION`。
 - **模板参数**：`PascalCase`；简短单字母可例外，如 `T`。
-- **指针/引用**：靠类型，如 `Type* p`, `Type& ref`。
+- **指针/引用**：更靠近标识符，如 `Type *p`, `Type &ref`。
 - **访问修饰符**：`public:` / `private:` 不缩进，成员缩进 4 空格。
 - **头文件**：使用 `#ifndef`。
 
@@ -40,7 +40,7 @@
 
 ## 4. 项目目录结构（CMake）
 
-```
+```text
 project/
 ├── CMakeLists.txt
 ├── include/          # .hpp / .h
